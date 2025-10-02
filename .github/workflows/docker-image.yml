@@ -11,7 +11,7 @@ permissions:
 jobs:
 
   build:
-
+    #Sobre esta imagen se van a ejecutar los comandos que indiquemos en el run
     runs-on: ubuntu-latest
 
     steps:
