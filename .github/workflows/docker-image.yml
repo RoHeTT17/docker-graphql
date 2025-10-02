@@ -25,6 +25,16 @@ jobs:
       with:
         #Haga una busqueda profunda en historial del commit. Buscar mas información en la documentación de GitHub.  
         fetch-depth: 0 
+    #Agregar el plugin para generar el versionamiento de forma automática (Es muy importante que este después del Checkout code)
+    - name: Git Semantic Version
+      uses: PaulHatch/semantic-version@v4.0.3
+      with:
+        #Realizar configuraciones personalizadas
+        major_pattern: "major:" #Si al inicio del commit esta "major:", indica que es un nuevo versionamiento mayor. EJ major:Descripcion commit
+        minor_pattern: "feat:"  #Si al inicio del commit esta "major:", indica que es un nuevo feature
+        format: "${major}.${minor}.${patch}-prerelease${increment}" #Cada commit que se haga incrementa el prerelease
+      id: version #Para poder usarlo debemos darle un identificador   
+        
     #Paso 2. Intentar autentificarnos
     #El comando en consola es docker login -u <user_dockerhub> -p <Token o pwd de dockerhub>
     - name: Docker login
@@ -33,6 +43,9 @@ jobs:
         #<nombre_variable> : <valor_variable>
         DOCKER_USER: ${{ secrets.DOCKER_USER }}
         DOCKER_PASSWORD: ${{ secrets.DOCKER_PASSWORD }}
+        #steps.<id_del_step>.outputs.<name_output> name_output se puede revisar la documentación del action para ver los outputs
+        NEW_VERSION: ${{ steps.version.outputs.version }}
+        
       #La "|" (pipeline) siginifica que cada unos de los siguientes comandos es independientes. Se puede correr todo en una linea.  
       #Los echo solo son con fines de practica.
       #Se podrían colocar también de forma directa los secrets, pero como variables es mas legible el código.
@@ -42,16 +55,16 @@ jobs:
       #echo $DOCKER_PASSWORD | docker login -u $DOCKER_USER --password-stdin
       run: |
         echo $DOCKER_PASSWORD | docker login -u $DOCKER_USER --password-stdin
+        echo "New version: $NEW_VERSION"
 
+    #Se comentaron para hacer las pruebas de la clase de versionamiento automatico y no demorar mucho.
     #Estos comandos se podrían haber ejecutado en el paso anterior, pero es mejor tener los pasos separados (manejo de errores)
-    - name: Build Docker Image
-      run: |
-        docker build --tag rohet/docker-graphql:0.0.1 .
+    # - name: Build Docker Image
+    #   run: |
+    #     docker build --tag rohet/docker-graphql:0.0.1 .
+    #     docker build --tag rohet/docker-graphql:latest .
 
-    - name: Push Docker Image
-      run: |
-        docker push rohet/docker-graphql:0.0.1
-
-    
-    # - name: Build the Docker image
-    #   run: docker build . --file Dockerfile --tag my-image-name:$(date +%s)
+    # - name: Push Docker Image
+    #   run: |
+    #     docker push rohet/docker-graphql:0.0.1
+    #     docker push rohet/docker-graphql:latest
