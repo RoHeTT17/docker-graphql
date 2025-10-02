@@ -36,9 +36,13 @@ jobs:
       #La "|" (pipeline) siginifica que cada unos de los siguientes comandos es independientes. Se puede correr todo en una linea.  
       #Los echo solo son con fines de practica.
       #Se podrían colocar también de forma directa los secrets, pero como variables es mas legible el código.
+      #Comando usadp en el curso (si funciona)
+      #docker login -u $DOCKER_USER -p $DOCKER_PASSWORD
+      #Si tu contraseña tiene caracteres especiales, es más seguro usar --password-stdin
+      #echo $DOCKER_PASSWORD | docker login -u $DOCKER_USER --password-stdin
       run: |
         echo "Inicia login" 
-        docker login -u $DOCKER_USER -p $DOCKER_PASSWORD
+        echo $DOCKER_PASSWORD | docker login -u $DOCKER_USER --password-stdin
         echo "Fin login"
     # - name: Build the Docker image
     #   run: docker build . --file Dockerfile --tag my-image-name:$(date +%s)
