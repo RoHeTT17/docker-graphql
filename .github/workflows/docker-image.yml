@@ -26,8 +26,9 @@ jobs:
     #Paso 2. Intentar autentificarnos
     #El comando en consola es docker login -u <user_dockerhub> -p <Token o pwd de dockerhub>
     - name: Docker login
-      #Declaramos variables de entorno
+      #Declaramos variables de entorno para que sea mas facil de manipular. Aunque se pueden usar de forma directa los secrets.
       env:
+        #<nombre_variable> : <valor_variable>
         DOCKER_USER: ${{ secrets.DOCKER_USER }}
         DOCKER_PASSWORD: ${{ secrets.DOCKER_PASSWORD }}
       #La "|" (pipeline) siginifica que cada unos de los siguientes comandos es independientes. Se puede correr todo en una linea.  
