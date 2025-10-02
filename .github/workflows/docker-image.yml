@@ -41,8 +41,17 @@ jobs:
       #Si tu contraseña tiene caracteres especiales, es más seguro usar --password-stdin
       #echo $DOCKER_PASSWORD | docker login -u $DOCKER_USER --password-stdin
       run: |
-        echo "Inicia login" 
         echo $DOCKER_PASSWORD | docker login -u $DOCKER_USER --password-stdin
-        echo "Fin login"
+
+    #Estos comandos se podrían haber ejecutado en el paso anterior, pero es mejor tener los pasos separados (manejo de errores)
+    - name: Build Docker Image
+      run: |
+        docker build --tag rohet/docker-graphql:0.0.1 .
+
+    - name: Push Docker Image
+      run: |
+        docker push rohet/docker-graphql:0.0.1
+
+    
     # - name: Build the Docker image
     #   run: docker build . --file Dockerfile --tag my-image-name:$(date +%s)
