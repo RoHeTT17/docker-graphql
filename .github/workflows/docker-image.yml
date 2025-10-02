@@ -43,9 +43,6 @@ jobs:
         #<nombre_variable> : <valor_variable>
         DOCKER_USER: ${{ secrets.DOCKER_USER }}
         DOCKER_PASSWORD: ${{ secrets.DOCKER_PASSWORD }}
-        #steps.<id_del_step>.outputs.<name_output> name_output se puede revisar la documentación del action para ver los outputs
-        NEW_VERSION: ${{ steps.version.outputs.version }}
-        
       #La "|" (pipeline) siginifica que cada unos de los siguientes comandos es independientes. Se puede correr todo en una linea.  
       #Los echo solo son con fines de practica.
       #Se podrían colocar también de forma directa los secrets, pero como variables es mas legible el código.
@@ -55,16 +52,19 @@ jobs:
       #echo $DOCKER_PASSWORD | docker login -u $DOCKER_USER --password-stdin
       run: |
         echo $DOCKER_PASSWORD | docker login -u $DOCKER_USER --password-stdin
-        echo "New version: $NEW_VERSION"
-
-    #Se comentaron para hacer las pruebas de la clase de versionamiento automatico y no demorar mucho.
     #Estos comandos se podrían haber ejecutado en el paso anterior, pero es mejor tener los pasos separados (manejo de errores)
-    # - name: Build Docker Image
-    #   run: |
-    #     docker build --tag rohet/docker-graphql:0.0.1 .
-    #     docker build --tag rohet/docker-graphql:latest .
+    - name: Build Docker Image
+      env:
+        #steps.<id_del_step>.outputs.<name_output> name_output se puede revisar la documentación del action para ver los outputs
+        NEW_VERSION: ${{ steps.version.outputs.version }}
+      run: |
+        docker build --tag rohet/docker-graphql:$NEW_VERSION .
+        docker build --tag rohet/docker-graphql:latest .
 
-    # - name: Push Docker Image
-    #   run: |
-    #     docker push rohet/docker-graphql:0.0.1
-    #     docker push rohet/docker-graphql:latest
+    - name: Push Docker Image
+      env:
+      #steps.<id_del_step>.outputs.<name_output> name_output se puede revisar la documentación del action para ver los outputs
+        NEW_VERSION: ${{ steps.version.outputs.version }}
+      run: |
+        docker push rohet/docker-graphql:$NEW_VERSION
+        docker push rohet/docker-graphql:latest
