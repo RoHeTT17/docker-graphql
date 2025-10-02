@@ -13,6 +13,29 @@ jobs:
     runs-on: ubuntu-latest
 
     steps:
-    - uses: actions/checkout@v4
-    - name: Build the Docker image
-      run: docker build . --file Dockerfile --tag my-image-name:$(date +%s)
+    #TENER MUCHO CUIDADO CON LOS ESPACIOS Y SINTAXIS
+    #Agregar un nombre al paso lo mas legible posible (name)
+
+    #Paso 1. Lo que hace el Checkout, basicamente es tomar lo que tenemos en el repositorio.
+    #Solo dejamos un "-", porque es la instrucción de todo el paso.
+    - name: Checkout code
+      uses: actions/checkout@v4
+      with:
+        #Haga una busqueda profunda en historial del commit. Buscar mas información en la documentación de GitHub.  
+        fecht-depth: 0 
+    #Paso 2. Intentar autentificarnos
+    #El comando en consola es docker login -u <user_dockerhub> -p <Token o pwd de dockerhub>
+    - name: Docker login
+      #Declaramos variables de entorno
+      env:
+        DOCKER_USER: ${{ secrets.DOCKER_USER }}
+        DOCKER_PASSWORD: ${{ secrets.DOCKER_PASSWORD }}
+      #La "|" (pipeline) siginifica que cada unos de los siguientes comandos es independientes. Se puede correr todo en una linea.  
+      #Los echo solo son con fines de practica.
+      #Se podrían colocar también de forma directa los secrets, pero como variables es mas legible el código.
+      run: |
+        echo: "Inicia login" 
+        docker login -u $DOCKER_USER -p $DOCKER_PASSWORD
+        echo "Fin login"
+    # - name: Build the Docker image
+    #   run: docker build . --file Dockerfile --tag my-image-name:$(date +%s)
