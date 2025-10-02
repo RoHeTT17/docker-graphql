@@ -22,7 +22,7 @@ jobs:
       uses: actions/checkout@v4
       with:
         #Haga una busqueda profunda en historial del commit. Buscar mas información en la documentación de GitHub.  
-        fecht-depth: 0 
+        fetch-depth: 0 
     #Paso 2. Intentar autentificarnos
     #El comando en consola es docker login -u <user_dockerhub> -p <Token o pwd de dockerhub>
     - name: Docker login
