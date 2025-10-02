@@ -37,7 +37,7 @@ jobs:
       #Los echo solo son con fines de practica.
       #Se podrían colocar también de forma directa los secrets, pero como variables es mas legible el código.
       run: |
-        echo: "Inicia login" 
+        echo "Inicia login" 
         docker login -u $DOCKER_USER -p $DOCKER_PASSWORD
         echo "Fin login"
     # - name: Build the Docker image
